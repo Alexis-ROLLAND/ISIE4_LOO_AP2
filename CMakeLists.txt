@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4)		# never set less 3.4 min version
-project(TestBIT)
+project(TestThevenin)
 
 # Build type is debug by default
 # call cmake .. -DCMAKE_BUILD_TYPE=Release to change to relase
@@ -19,7 +19,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 include_directories(include)
 
-add_executable(testBit src/test_Bit.cpp src/Bit.cpp)
+add_executable(testThevenin src/testThevenin.cpp src/TheveninModel.cpp)
 
 
 
