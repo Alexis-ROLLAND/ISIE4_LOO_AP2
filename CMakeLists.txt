@@ -19,7 +19,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 include_directories(include)
 
-add_executable(testThevenin src/testThevenin.cpp src/TheveninModel.cpp)
+add_executable(testThevenin src/testThevenin.cpp src/TheveninModel.cpp src/PontDiviseur.cpp)
 
 
 

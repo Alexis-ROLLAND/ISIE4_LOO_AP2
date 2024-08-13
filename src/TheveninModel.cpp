@@ -10,7 +10,8 @@ TheveninModel::TheveninModel(double E, double R){
 
 double Vab = this->getEth() - this->getRth() * Current;
 
-if (Vab < 0) throw std::overflow_error{"Current is too High"}; 
+// If Vab and Eth aren't of same sign - Current is too high !
+if (std::signbit(Vab) != std::signbit(this->getEth())) throw std::overflow_error{"Current is too High"}; 
 
 return Vab;
 }
@@ -35,28 +36,6 @@ std::tuple<double, double> TheveninModel::getOutputVoltageAndCurrent(double Char
     double Vab = this->getOutputVoltageByCharge(Charge);
 
     return std::make_tuple(Vab,Iout);
-}
-
-//----------------------------------------------------------------------------
-//  Pont Diviseur class
-//----------------------------------------------------------------------------
-void    PontDiviseur::Update(){
-    if ((this->getRlow() == 0.0) || (this->getRhigh() == 0.0)) return;  /** One or both resistors are null, nothing can be done */
-
-    double tmp = this->getVexcitation();
-
-    // Let's begin with Eth
-    tmp *= this->getRlow();
-    tmp /= (this->getRhigh() + this->getRlow()); 
-
-    this->setEth(tmp);
-
-    // then, let's work with Rth
-    tmp = this->getRhigh() * this->getRlow();
-    tmp /= (this->getRhigh() + this->getRlow()); 
-
-    this->setRth(tmp);
-
 }
 
 
