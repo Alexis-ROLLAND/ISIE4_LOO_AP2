@@ -3,8 +3,18 @@
 //----------------------------------------------------------------------------
 //  Pont Diviseur class
 //----------------------------------------------------------------------------
+PontDiviseur::PontDiviseur(double Vexcitation, double Rhigh, double Rlow):Vexcitation{Vexcitation}{
+    if (Rhigh > 0.0) this->setRhigh(Rhigh);
+    else throw NonPositiveResistance{};
+
+    if (Rlow > 0.0) this->setRlow(Rlow);
+    else throw NonPositiveResistance{};
+
+    this->Update();
+}
+//----------------------------------------------------------------------------
 void    PontDiviseur::Update(){
-    if ((this->getRlow() == 0.0) || (this->getRhigh() == 0.0)) return;  /** One or both resistors are null, nothing can be done */
+    if ((this->getRlow() <= 0.0) || (this->getRhigh() <= 0.0)) return;  
 
     double tmp = this->getVexcitation();
 

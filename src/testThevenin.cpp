@@ -76,12 +76,12 @@ TEST_CASE("TEST getOutputVoltageAndCurrent"){
 
 //  PontDiviseur class tests
 TEST_CASE("TEST - PontDiviseur - Ctor & accessors"){
-    PontDiviseur    pont{};
+    PontDiviseur    pont{5.0,1e3,2e3};
 
-    CHECK(pont.getVexcitation() == doctest::Approx(0));
-    CHECK(pont.getRlow() == doctest::Approx(0));
-    CHECK(pont.getRhigh() == doctest::Approx(0));
-
+    CHECK(pont.getVexcitation() == doctest::Approx(5.0));
+    CHECK(pont.getRhigh() == doctest::Approx(1e3));
+    CHECK(pont.getRlow() == doctest::Approx(2e3));
+    
     pont.setVexcitation(5.0);
     CHECK(pont.getVexcitation() == doctest::Approx(5.0));
 
@@ -95,10 +95,7 @@ TEST_CASE("TEST - PontDiviseur - Ctor & accessors"){
 }
 
 TEST_CASE("TEST - getTensionAVide / getOutputResistance"){
-    PontDiviseur pont{};
-    pont.setVexcitation(5.0);
-    pont.setRhigh(10e3);
-    pont.setRlow(10e3);
+    PontDiviseur    pont{5.0,10e3,10e3};
 
     REQUIRE(pont.getVexcitation() == doctest::Approx(5.0));
     REQUIRE(pont.getRhigh() == doctest::Approx(10e3));
