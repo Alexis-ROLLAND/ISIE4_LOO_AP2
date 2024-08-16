@@ -12,16 +12,22 @@ class TheveninModel
 private:
     double      Eth{0};
     Resistance  Rth{0};
+    mutable     bool        modelIsOK{true};
+protected:
+    [[nodiscard]]   bool    isModelOK() const noexcept {return this->modelIsOK;};
+    void    setModelOK() const noexcept {this->modelIsOK = true;};
+    void    setModelNotOK() const noexcept {this->modelIsOK = false;};
+    virtual void updateModel() const {};
 public:
     TheveninModel() = default;
     virtual ~TheveninModel() = default;
     TheveninModel(double E, Resistance R);
 
-    void    setEth(double Eth) noexcept {this->Eth = Eth;};
-    [[nodiscard]]   double  getEth() const noexcept {return this->Eth;};
+    void    setEth(double Eth); 
+    [[nodiscard]]   double  getEth() const noexcept {if (!this->isModelOK()){this->updateModel();}; return this->Eth;};
 
-    void    setRth(const Resistance &Rth)  {this->Rth = Rth;};
-    [[nodiscard]]   Resistance  getRth() const noexcept {return this->Rth;};
+    void    setRth(const Resistance &Rth);
+    [[nodiscard]]   Resistance  getRth() const noexcept {if (!this->isModelOK()){this->updateModel();}; return this->Rth;};
 
     [[nodiscard]]   double  getOutputVoltageByCurrent(double Current) const ;   /**< Current is the output current in A */
     [[nodiscard]]   double  getOutputVoltageByCharge(PositiveResistance Charge) const ;     /**< Charge is the charge in Ohm */

@@ -18,9 +18,22 @@ class PontDiviseur : public TheveninModel{
         PositiveResistance  Rhigh;        /** High side resistor */
         PositiveResistance  Rlow;        /** Low side resistor */
     
-
+        virtual void updateModel() const  override  ;
 
     public:
+
+        PontDiviseur() = delete;
+        virtual ~PontDiviseur() = default;
+
+        PontDiviseur(double Valim, const PositiveResistance &Rh, const PositiveResistance &Rl);
+
+        [[nodiscard]] double getVexcitation() const noexcept {return this->Vexcitation;};
+        [[nodiscard]] PositiveResistance getRhigh() const noexcept {return this->Rhigh;};
+        [[nodiscard]] PositiveResistance getRlow() const noexcept {return this->Rlow;};
+
+        void    setVexcitation(double Valim) noexcept {this->Vexcitation = Valim; this->setModelNotOK();};
+        void    setRhigh(const PositiveResistance &Res) noexcept {this->Rhigh = Res; this->setModelNotOK();};
+        void    setlow(const PositiveResistance &Res) noexcept {this->Rlow = Res; this->setModelNotOK();};
 
 
 
