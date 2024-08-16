@@ -5,37 +5,29 @@
 #include <stdexcept>
 #include <tuple>
 
-//----------------------------------------------------------------------------
-// Déclaration de la classe d'exception personnalisée
-class NegativeResistance : public std::underflow_error {
-public:
-    // Constructeur qui initialise l'exception avec un message fixe
-    NegativeResistance() 
-        : std::underflow_error("Resistance cannot be negative") {}
-};
-//----------------------------------------------------------------------------
+#include "Resistance.hpp"
+
 class TheveninModel
 {
 private:
-    double  Eth{0};
-    double  Rth{0};
+    double      Eth{0};
+    Resistance  Rth{0};
 public:
     TheveninModel() = default;
     virtual ~TheveninModel() = default;
-    TheveninModel(double E, double R);
+    TheveninModel(double E, Resistance R);
 
     void    setEth(double Eth) noexcept {this->Eth = Eth;};
     [[nodiscard]]   double  getEth() const noexcept {return this->Eth;};
 
-    void    setRth(double Rth)  {(Rth < 0.0) ? throw NegativeResistance{}  : this->Rth = Rth;};
-    [[nodiscard]]   double  getRth() const noexcept {return this->Rth;};
+    void    setRth(const Resistance &Rth)  {this->Rth = Rth;};
+    [[nodiscard]]   Resistance  getRth() const noexcept {return this->Rth;};
 
     [[nodiscard]]   double  getOutputVoltageByCurrent(double Current) const ;   /**< Current is the output current in A */
-    [[nodiscard]]   double  getOutputVoltageByCharge(double Charge) const ;     /**< Charge is the charge in Ohm */
+    [[nodiscard]]   double  getOutputVoltageByCharge(PositiveResistance Charge) const ;     /**< Charge is the charge in Ohm */
 
-    [[nodiscard]]  std::tuple<double, double> getOutputVoltageAndCurrent(double Charge) const ; /**<  Charge is the charge in Ohm  */ 
+    [[nodiscard]]  std::tuple<double, double> getOutputVoltageAndCurrent(PositiveResistance Charge) const ; /**<  Charge is the charge in Ohm  */ 
 };
-//----------------------------------------------------------------------------
 
 #endif  /*  __THEVENIN_MODEL_HPP__  */
 
