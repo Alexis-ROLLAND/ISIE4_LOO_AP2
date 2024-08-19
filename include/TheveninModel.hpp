@@ -7,33 +7,50 @@
 
 #include "Resistance.hpp"
 
+using   Voltage = double;   /**< Alias to double for Voltage variables */
+using   Current = double;   /**< Alias to double for Current variables */
+
 class TheveninModel
 {
 private:
-    double      Eth{0};
-    Resistance  Rth{0};
-    mutable     bool        modelIsOK{true};
+    Voltage     Eth{0};     /**< Eth in Volt */
+    Resistance  Rth{0};     /**< Rth in Ohm */
+    
 protected:
-    [[nodiscard]]   bool    isModelOK() const noexcept {return this->modelIsOK;};
-    void    setModelOK() const noexcept {this->modelIsOK = true;};
-    void    setModelNotOK() const noexcept {this->modelIsOK = false;};
-    virtual void updateModel() const {};
+    
+    
+    void    _setEth(Voltage Eth) noexcept {this->Eth = Eth;}; 
+    void    _setRth(const Resistance &Rth) noexcept {this->Rth = Rth;};
+    
 public:
-    TheveninModel() = default;
-    virtual ~TheveninModel() = default;
-    TheveninModel(double E, Resistance R);
+    TheveninModel() = default;              /**< Default constructor given by compilator */
+    virtual ~TheveninModel() = default;     /**< Defaulted destructor */
+    TheveninModel(Voltage E, Resistance R):Eth{E},Rth{R}{};  /**< Overloaded constructor */
 
-    void    setEth(double Eth); 
-    [[nodiscard]]   double  getEth() const noexcept {if (!this->isModelOK()){this->updateModel();}; return this->Eth;};
+    [[nodiscard]]   Voltage     getEth() const noexcept {return this->Eth;};
+    [[nodiscard]]   Resistance  getRth() const noexcept {return this->Rth;};
 
-    void    setRth(const Resistance &Rth);
-    [[nodiscard]]   Resistance  getRth() const noexcept {if (!this->isModelOK()){this->updateModel();}; return this->Rth;};
+    [[nodiscard]]   Voltage  getOutputVoltageByCurrent(Current Iout) const;   /**< Current is the output current in A */
+    [[nodiscard]]   Voltage  getOutputVoltageByCharge(PositiveResistance Charge) const noexcept;     /**< Charge is the charge in Ohm */
 
-    [[nodiscard]]   double  getOutputVoltageByCurrent(double Current) const ;   /**< Current is the output current in A */
-    [[nodiscard]]   double  getOutputVoltageByCharge(PositiveResistance Charge) const ;     /**< Charge is the charge in Ohm */
-
-    [[nodiscard]]  std::tuple<double, double> getOutputVoltageAndCurrent(PositiveResistance Charge) const ; /**<  Charge is the charge in Ohm  */ 
+    [[nodiscard]]   std::tuple<Voltage, Current> getOutputVoltageAndCurrent(PositiveResistance Charge) const noexcept; /**<  Charge is the charge in Ohm  */ 
 };
+
+class RealTheveninModel : public TheveninModel{
+    private:
+
+    protected:
+        
+    public:
+        RealTheveninModel() = default;
+        virtual ~RealTheveninModel() = default;
+        RealTheveninModel(Voltage E, Resistance R):TheveninModel{E,R}{};
+
+        void    setEth(Voltage Eth) noexcept {this->_setEth(Eth);};
+        void    setRth(const Resistance &Rth) noexcept {this->_setRth(Rth);};
+
+};
+
 
 #endif  /*  __THEVENIN_MODEL_HPP__  */
 

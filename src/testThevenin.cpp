@@ -36,8 +36,19 @@ TEST_CASE("Positive Resistance - Full Test"){
     CHECK_THROWS_WITH_AS(myRes.setValue(0.0), "Bad resistance value detected", std::underflow_error);
 }
 
+TEST_CASE("Resistance - Test Helper functions"){
+    PositiveResistance Ra{10e3};
+    PositiveResistance Rb{10e3};
+
+    PositiveResistance Rp = makeParallelResistance(Ra,Rb);
+
+    CHECK(Rp.getValue() == doctest::Approx(5e3));
+
+    
+}
+
 TEST_CASE("Thevenin Model - Ctor & Accessors"){
-    TheveninModel   testModel{};
+    RealTheveninModel   testModel{};
 
     CHECK(testModel.getEth() == doctest::Approx(0));
     CHECK(testModel.getRth().getValue() == doctest::Approx(0));   
@@ -50,20 +61,20 @@ TEST_CASE("Thevenin Model - Ctor & Accessors"){
     CHECK(testModel.getRth().getValue() == doctest::Approx(1));
 
     testRes.setValue(12);
-    TheveninModel   testModel2{12,testRes};
+    RealTheveninModel   testModel2{12,testRes};
 
     CHECK(testModel2.getEth() == doctest::Approx(12));
     CHECK(testModel2.getRth().getValue() == doctest::Approx(12)); 
-
-    const TheveninModel   testModel3{5,testRes};
-
-    CHECK(testModel3.getEth() == doctest::Approx(5));
-    CHECK(testModel3.getRth().getValue() == doctest::Approx(12)); 
-
+    
+    const RealTheveninModel constModel{3.3,Resistance{5}};
+    CHECK(constModel.getEth() == doctest::Approx(3.3));
+    CHECK(constModel.getRth().getValue() == doctest::Approx(5)); 
 }
 
 TEST_CASE("Thevenin Model - Lasts tests"){
-    TheveninModel testModel{5.0, Resistance{10}};
+
+        
+    RealTheveninModel testModel{5.0, Resistance{10}};
 
     REQUIRE(testModel.getEth() == doctest::Approx(5.0) );
     REQUIRE(testModel.getRth().getValue() == doctest::Approx(10.0) );
@@ -71,46 +82,72 @@ TEST_CASE("Thevenin Model - Lasts tests"){
     CHECK(testModel.getOutputVoltageByCurrent(0.1) == doctest::Approx(4.0));
     CHECK(testModel.getOutputVoltageByCurrent(0.2) == doctest::Approx(3.0));
 
-    CHECK_THROWS_WITH_AS(testModel.getOutputVoltageByCurrent(1), "Current is too High", std::overflow_error); /**< Check if the exception is raised if current is to high */
+    CHECK_THROWS_WITH_AS(testModel.getOutputVoltageByCurrent(1), "Current is too High", std::overflow_error); 
 
     testModel.setEth(-5.0);
 
     CHECK(testModel.getOutputVoltageByCurrent(-0.1) == doctest::Approx(-4.0));
     CHECK(testModel.getOutputVoltageByCurrent(-0.2) == doctest::Approx(-3.0));
 
-    CHECK_THROWS_WITH_AS(testModel.getOutputVoltageByCurrent(-1), "Current is too High", std::overflow_error); /**< Check if the exception is raised if current is to high */
+    CHECK_THROWS_WITH_AS(testModel.getOutputVoltageByCurrent(-1), "Current is too High", std::overflow_error); 
 
     testModel.setEth(5.0);
     
     CHECK(testModel.getOutputVoltageByCharge(PositiveResistance{10}) == doctest::Approx(2.5));
     CHECK(testModel.getOutputVoltageByCharge(PositiveResistance{40}) == doctest::Approx(4));
 
-    auto [Voltage, Current] = testModel.getOutputVoltageAndCurrent(PositiveResistance{10});
+    auto [Vout, Iout] = testModel.getOutputVoltageAndCurrent(PositiveResistance{10});
 
-    CHECK(Voltage == doctest::Approx(2.5)); /** Voltage must be 2,5V */
-    CHECK(Current == doctest::Approx(0.25)); /** Current must be 250mA */
+    CHECK(Vout == doctest::Approx(2.5)); // Voltage must be 2,5V 
+    CHECK(Iout == doctest::Approx(0.25)); // Current must be 250mA 
+    
+    
 }
 
 
 TEST_CASE("Pont diviseur - Ctor & accessors"){
+    
+    
     PontDiviseur    testBridge{5.0, PositiveResistance{10e3}, PositiveResistance{20e3}};
 
     CHECK(testBridge.getVexcitation() == doctest::Approx(5.0));
     CHECK(testBridge.getRhigh().getValue() == doctest::Approx(10e3));
     CHECK(testBridge.getRlow().getValue() == doctest::Approx(20e3));
 
-    testBridge.setVexcitation(12.0);
-    CHECK(testBridge.getVexcitation() == doctest::Approx(12.0));
+    CHECK(testBridge.getEth() == doctest::Approx(5.0*(2.0/3.0)));
+    CHECK(testBridge.getRth().getValue() == doctest::Approx((10e3 * 20e3) / (30e3)));
+
+    testBridge.setVexcitation(3.3);
+    CHECK(testBridge.getEth() == doctest::Approx(3.3*(2.0/3.0)));
+    CHECK(testBridge.getRth().getValue() == doctest::Approx((10e3 * 20e3) / (30e3)));
+
+    testBridge.setRlow(PositiveResistance{10e3});
+    CHECK(testBridge.getEth() == doctest::Approx(3.3*(1.0/2.0)));
+    CHECK(testBridge.getRth().getValue() == doctest::Approx((10e3 * 10e3) / (20e3)));
+
+    testBridge.setRhigh(PositiveResistance{20e3});
+    CHECK(testBridge.getEth() == doctest::Approx(3.3*(1.0/3.0)));
+    CHECK(testBridge.getRth().getValue() == doctest::Approx((20e3 * 10e3) / (30e3)));
+
+
+    const   PontDiviseur testConstBridge{12.0,PositiveResistance{20e3},PositiveResistance{20e3}};
+
+    CHECK(testConstBridge.getVexcitation() == doctest::Approx(12.0));
+    CHECK(testConstBridge.getRhigh().getValue() == doctest::Approx(20e3));
+    CHECK(testConstBridge.getRlow().getValue() == doctest::Approx(20e3));
+    CHECK(testConstBridge.getEth() == doctest::Approx(12.0*(2.0/4.0)));
+    CHECK(testConstBridge.getRth().getValue() == doctest::Approx((20e3 * 20e3) / (40e3)));
 
 
 
 }
 
-TEST_CASE("Security enhancers"){
-    PontDiviseur    testBridge{5.0, PositiveResistance{10e3}, PositiveResistance{20e3}};
+TEST_CASE("Pont diviseur - Full tests"){
+    
+    PontDiviseur    testBridge{5.0, PositiveResistance{10e3}, PositiveResistance{10e3}};
 
-    CHECK_THROWS_AS(testBridge.setEth(12.0), std::bad_typeid);
+    CHECK(testBridge.getVoutAVide() == doctest::Approx(2.5));
+    CHECK(testBridge.getOutputResistance().getValue() == doctest::Approx(5e3));
 
-
-
+    
 }

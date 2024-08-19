@@ -6,7 +6,8 @@
 /**
  * Version "sécurisée" V2
  * Sécurisation par utilisation des types Resistance et PositiveResistance
- * 
+ * et la transformation de la classe TheveninModel en classe virtuelle pure
+ * (classe abstraite).
  */
 //----------------------------------------------------------------------------
 
@@ -14,28 +15,31 @@
 class PontDiviseur : public TheveninModel{
     private:
         
-        double  Vexcitation{};   /** Bridge's excitation voltage (in Volt) - Ground referenced  */
+        Voltage  Vexcitation{};         /** Bridge's excitation voltage (in Volt) - Ground referenced  */
         PositiveResistance  Rhigh;        /** High side resistor */
         PositiveResistance  Rlow;        /** Low side resistor */
     
-        virtual void updateModel() const  override  ;
+    protected:
+       
 
     public:
 
         PontDiviseur() = delete;
         virtual ~PontDiviseur() = default;
 
-        PontDiviseur(double Valim, const PositiveResistance &Rh, const PositiveResistance &Rl);
+        PontDiviseur(Voltage Valim, const PositiveResistance &Rh, const PositiveResistance &Rl);
 
-        [[nodiscard]] double getVexcitation() const noexcept {return this->Vexcitation;};
+        [[nodiscard]] Voltage getVexcitation() const noexcept {return this->Vexcitation;};
         [[nodiscard]] PositiveResistance getRhigh() const noexcept {return this->Rhigh;};
         [[nodiscard]] PositiveResistance getRlow() const noexcept {return this->Rlow;};
 
-        void    setVexcitation(double Valim) noexcept {this->Vexcitation = Valim; this->setModelNotOK();};
-        void    setRhigh(const PositiveResistance &Res) noexcept {this->Rhigh = Res; this->setModelNotOK();};
-        void    setlow(const PositiveResistance &Res) noexcept {this->Rlow = Res; this->setModelNotOK();};
+        void    setVexcitation(Voltage Valim) noexcept;        
+        void    setRhigh(const PositiveResistance &Res) noexcept;
+        void    setRlow(const PositiveResistance &Res) noexcept;
+        
 
-
+        Voltage getVoutAVide() const noexcept {return this->getEth();};
+        PositiveResistance getOutputResistance() const noexcept {return PositiveResistance{this->getRth().getValue()};};
 
 
 };

@@ -37,6 +37,8 @@ class   PositiveResistance : public Resistance{
 
 };
 
+// Helper functions
+PositiveResistance  makeParallelResistance(const PositiveResistance &r1, const PositiveResistance &r2);
 
 
 
