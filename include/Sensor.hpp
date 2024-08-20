@@ -18,7 +18,7 @@ private:
     const std::string   Unit{}; /**< Unit of the output  */
     OutputType outputValue{};
 protected:
-    [[nodiscard]]   std::string getUnit() const noexcept {return this->Unit;};
+    
     void setOutputValue(OutputType newValue) noexcept {this->outputValue = newValue;};
     
 public:
@@ -26,6 +26,7 @@ public:
     Sensor(uint32_t uid, const std::string &unit):UID{uid},Unit{unit}{};
     virtual ~Sensor() = default;    /**< Dtor is defaulted */
 
+    [[nodiscard]] const std::string getUnit() const noexcept {return this->Unit;};
     [[nodiscard]] uint32_t  getUID() const noexcept {return this->UID;};
     [[nodiscard]] OutputType getOutputValue() const noexcept {return this->outputValue;};
 
@@ -35,17 +36,33 @@ public:
 };
 //----------------------------------------------------------------------------
 template <Numeric OutputType>
-class TempCelciusSensor : public Sensor<OutputType>{
+class GenericTempCelciusSensor : public Sensor<OutputType>{
     private:
 
     public:
-        TempCelciusSensor() = delete;
-        virtual ~TempCelciusSensor() = default;
+        GenericTempCelciusSensor() = delete;
+        virtual ~GenericTempCelciusSensor() = default;
 
-        TempCelciusSensor(uint32_t uid):Sensor<OutputType>(uid,"°C"){};
+        GenericTempCelciusSensor(uint32_t uid):Sensor<OutputType>(uid,"°C"){};
+
+        virtual void    elaborateNewValue() = 0;
 };
+//----------------------------------------------------------------------------
+constexpr   uint32_t    TC74_UUID{0x7400484F};
 
+class TC74 : public GenericTempCelciusSensor<int8_t>{
+    private:
+        const uint8_t i2c_address{};
+    public:
+        TC74() = delete;
+        virtual ~TC74() = default;
+        explicit TC74(uint8_t addr):GenericTempCelciusSensor<int8_t>{TC74_UUID},i2c_address{addr}{};
 
+        uint8_t getI2Caddress() const noexcept {return this->i2c_address;};
+
+        virtual void    elaborateNewValue() override{};
+};
+//----------------------------------------------------------------------------
 
 
 
