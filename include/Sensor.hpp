@@ -5,6 +5,7 @@
 #include <string>
 #include <concepts>
 #include <print>
+#include <random>   // for the "fakes" sensors 
 
 //----------------------------------------------------------------------------
 template <typename OutputType>
@@ -35,6 +36,22 @@ public:
     void    dump() const noexcept {std::println("{} {}",this->getOutputValue,this->getUnit());};
 };
 //----------------------------------------------------------------------------
+class ADT7310 : public Sensor<uint16_t>{
+    public:
+        enum class ADT7310Mode {MODE13BITS, MODE16BITS};
+    private:
+        ADT7310Mode  Mode{ADT7310Mode::MODE13BITS};
+    public:
+        ADT7310() = delete;
+        ADT7310(uint32_t uid):Sensor<uint16_t>(uid,"LSB 0.0625°C (13 bits mode) or LSB 0.0625°C (16 bits mode)"){};  
+        virtual ~ADT7310() = default;
+
+        void        setMode(ADT7310Mode Mode) noexcept {this->Mode = Mode;};
+        ADT7310Mode getMode() const noexcept {return this->Mode;}; 
+
+        virtual void    elaborateNewValue() override;
+};
+//----------------------------------------------------------------------------
 template <Numeric OutputType>
 class GenericTempCelciusSensor : public Sensor<OutputType>{
     private:
@@ -60,11 +77,21 @@ class TC74 : public GenericTempCelciusSensor<int8_t>{
 
         uint8_t getI2Caddress() const noexcept {return this->i2c_address;};
 
-        virtual void    elaborateNewValue() override{};
+        virtual void    elaborateNewValue() override;
 };
 //----------------------------------------------------------------------------
+constexpr   uint32_t    LM35_UUID{0x35000000};
 
-
+class LM35 : public GenericTempCelciusSensor<double>{
+    private:
+        
+    public:
+        LM35():GenericTempCelciusSensor<double>{LM35_UUID}{};
+        virtual ~LM35() = default;
+        
+        virtual void    elaborateNewValue() override;
+};
+//----------------------------------------------------------------------------
 
 
 #endif  /*  __SENSOR_HPP__  */
