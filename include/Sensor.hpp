@@ -43,13 +43,15 @@ class ADT7310 : public Sensor<uint16_t>{
         ADT7310Mode  Mode{ADT7310Mode::MODE13BITS};
     public:
         ADT7310() = delete;
-        ADT7310(uint32_t uid):Sensor<uint16_t>(uid,"LSB 0.0625°C (13 bits mode) or LSB 0.0625°C (16 bits mode)"){};  
+        ADT7310(uint32_t uid):Sensor<uint16_t>(uid,"LSB 0.0625°C (Signed 13 bits mode) or LSB 0.0078°C (Signed 16 bits mode)"){};  
         virtual ~ADT7310() = default;
 
         void        setMode(ADT7310Mode Mode) noexcept {this->Mode = Mode;};
         ADT7310Mode getMode() const noexcept {return this->Mode;}; 
 
         virtual void    elaborateNewValue() override;
+
+        double  getConvertedTemperature() const noexcept;
 };
 //----------------------------------------------------------------------------
 template <Numeric OutputType>

@@ -50,3 +50,18 @@ void    ADT7310::elaborateNewValue(){
     this->setOutputValue(Temp);
 }
 
+double  ADT7310::getConvertedTemperature() const noexcept{
+    double Temp;
+    uint16_t    rawTemp = this->getOutputValue();
+
+    if (this->getMode() == ADT7310Mode::MODE13BITS){
+        if (rawTemp < 0x1000) Temp = rawTemp / 16.0;        // Temperature is positive
+        else Temp = (rawTemp - 8192) / 16.0;                 // Temperature is negative
+    }
+    else{
+        if (rawTemp < 0x8000) Temp = rawTemp / 128.0;        // Temperature is positive
+        else Temp = (rawTemp - 65536) / 128.0;                 // Temperature is negative
+    }
+
+    return Temp;    
+}

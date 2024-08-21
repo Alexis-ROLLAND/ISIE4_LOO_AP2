@@ -36,7 +36,7 @@ int main(void){
 
     for (uint8_t i=0;i<10;++i){
         myAdt.elaborateNewValue();
-        std::print(" {0:04x} ",myAdt.getOutputValue());
+        std::println(" {0:04x} = {1:.02f} ",myAdt.getOutputValue(),myAdt.getConvertedTemperature());
     }
 
     std::println("");
@@ -45,7 +45,7 @@ int main(void){
 
     for (uint8_t i=0;i<10;++i){
         myAdt.elaborateNewValue();
-        std::print(" {0:04x} ",myAdt.getOutputValue());
+        std::println(" {0:04x} = {1:.02f}",myAdt.getOutputValue(),myAdt.getConvertedTemperature());
     }
 
     std::println("");
