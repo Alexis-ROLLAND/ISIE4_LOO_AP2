@@ -43,7 +43,7 @@ class ADT7310 : public Sensor<uint16_t>{
         ADT7310Mode  Mode{ADT7310Mode::MODE13BITS};
     public:
         ADT7310() = delete;
-        ADT7310(uint32_t uid):Sensor<uint16_t>(uid,"LSB 0.0625°C (Signed 13 bits mode) or LSB 0.0078°C (Signed 16 bits mode)"){};  
+        explicit ADT7310(uint32_t uid):Sensor<uint16_t>(uid,"LSB 0.0625°C (Signed 13 bits mode) or LSB 0.0078°C (Signed 16 bits mode)"){};  
         virtual ~ADT7310() = default;
 
         void        setMode(ADT7310Mode Mode) noexcept {this->Mode = Mode;};
@@ -62,7 +62,7 @@ class GenericTempCelciusSensor : public Sensor<OutputType>{
         GenericTempCelciusSensor() = delete;
         virtual ~GenericTempCelciusSensor() = default;
 
-        GenericTempCelciusSensor(uint32_t uid):Sensor<OutputType>(uid,"°C"){};
+        explicit GenericTempCelciusSensor(uint32_t uid):Sensor<OutputType>(uid,"°C"){};
 
         virtual void    elaborateNewValue() = 0;
 };

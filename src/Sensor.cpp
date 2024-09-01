@@ -1,36 +1,6 @@
 #include "Sensor.hpp"
 
-
-
-void    TC74::elaborateNewValue(){
-
-    // Crée un générateur de nombres pseudo-aléatoires avec un "seed" unique pour chaque exécution
-    std::random_device rd;  
-    std::mt19937 gen(rd()); 
-
-    // Définir une distribution uniforme entre -65 et 127
-    std::uniform_int_distribution<int> distrib(-65, 127);
-
-    // Générer un nombre aléatoire dans l'intervalle
-    int8_t Temp = distrib(gen);
-
-    this->setOutputValue(Temp);
-}
-
-void    LM35::elaborateNewValue(){
-
-    // Crée un générateur de nombres pseudo-aléatoires avec un "seed" unique pour chaque exécution
-    std::random_device rd;  
-    std::mt19937 gen(rd()); 
-
-    // Définir une distribution uniforme entre -55 et 150
-    std::uniform_real_distribution<double> distrib(-55.0, 150.0);
-
-    // Générer un nombre réel aléatoire dans l'intervalle
-    double Temp = distrib(gen);
-    this->setOutputValue(Temp);
-}
-
+//-----------------------------------------------------------------------------
 void    ADT7310::elaborateNewValue(){
     uint16_t    Temp;
     // Crée un générateur de nombres pseudo-aléatoires avec un "seed" unique pour chaque exécution
@@ -49,7 +19,7 @@ void    ADT7310::elaborateNewValue(){
 
     this->setOutputValue(Temp);
 }
-
+//-----------------------------------------------------------------------------
 double  ADT7310::getConvertedTemperature() const noexcept{
     double Temp;
     uint16_t    rawTemp = this->getOutputValue();
@@ -65,3 +35,36 @@ double  ADT7310::getConvertedTemperature() const noexcept{
 
     return Temp;    
 }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void    TC74::elaborateNewValue(){
+
+    // Crée un générateur de nombres pseudo-aléatoires avec un "seed" unique pour chaque exécution
+    std::random_device rd;  
+    std::mt19937 gen(rd()); 
+
+    // Définir une distribution uniforme entre -65 et 127
+    std::uniform_int_distribution<int> distrib(-65, 127);
+
+    // Générer un nombre aléatoire dans l'intervalle
+    int8_t Temp = distrib(gen);
+
+    this->setOutputValue(Temp);
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void    LM35::elaborateNewValue(){
+
+    // Crée un générateur de nombres pseudo-aléatoires avec un "seed" unique pour chaque exécution
+    std::random_device rd;  
+    std::mt19937 gen(rd()); 
+
+    // Définir une distribution uniforme entre -55 et 150
+    std::uniform_real_distribution<double> distrib(-55.0, 150.0);
+
+    // Générer un nombre réel aléatoire dans l'intervalle
+    double Temp = distrib(gen);
+    this->setOutputValue(Temp);
+}
+//-----------------------------------------------------------------------------
+
