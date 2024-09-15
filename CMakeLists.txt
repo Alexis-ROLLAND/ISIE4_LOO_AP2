@@ -10,7 +10,7 @@ endif()
 
 set(CMAKE_CXX_STANDARD 23)  # We're using C++23 standard :)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "-Og -g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
