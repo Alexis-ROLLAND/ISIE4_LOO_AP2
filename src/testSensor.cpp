@@ -8,6 +8,7 @@ int main(void) {
     std::println("--- Test Sensor Classes ---");
 
     TC74 tc74a0(0x48);
+
     std::print("TC74 Sensor Dump : ");
     tc74a0.dump();
 

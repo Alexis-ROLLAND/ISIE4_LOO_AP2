@@ -54,7 +54,7 @@ template <Numeric OutputType> class Sensor {
     virtual void elaborateNewValue() = 0; /**< Pure virtual method -> class is now abract */
 
     /**
-     *  @brief  Prints the outout value and the unit message.
+     *  @brief  Prints the output value and the unit message.
      */
     void dump() const noexcept { std::println("{} {}", this->getOutputValue(), this->getUnit()); };
 };
@@ -82,7 +82,7 @@ class ADT7310 : public Sensor<uint16_t> {
 
     virtual void elaborateNewValue() override;
 
-    double getConvertedTemperature() const noexcept;
+    [[nodiscard]] double getConvertedTemperature() const noexcept;
 };
 //----------------------------------------------------------------------------
 template <Numeric OutputType> class GenericTempCelciusSensor : public Sensor<OutputType> {
@@ -107,7 +107,7 @@ class TC74 : public GenericTempCelciusSensor<int8_t> {
     virtual ~TC74() = default;
     explicit TC74(uint8_t addr) : GenericTempCelciusSensor<int8_t>{TC74_UUID}, i2c_address{addr} {};
 
-    uint8_t getI2Caddress() const noexcept { return this->i2c_address; };
+    [[nodiscard]] uint8_t getI2Caddress() const noexcept { return this->i2c_address; };
 
     virtual void elaborateNewValue() override;
 };

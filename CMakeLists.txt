@@ -34,7 +34,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 
 # Ajout de flags spécifiques pour GCC/Clang
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  set(SANITIZE_FLAGS "-fsanitize=undefined") # Choisissez vos sanitizers ici (pas de leak ni address car wxWidgets est plein de leaks (sic) )
+  set(SANITIZE_FLAGS "-fsanitize=undefined,address,leak") # Choisissez vos sanitizers ici 
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(${SANITIZE_FLAGS} -fno-omit-frame-pointer -g)
     add_link_options(${SANITIZE_FLAGS})
