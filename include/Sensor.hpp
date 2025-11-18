@@ -78,7 +78,7 @@ class ADT7310 : public Sensor<uint16_t> {
     virtual ~ADT7310() = default;
 
     void setMode(ADT7310Mode Mode) noexcept { this->_Mode = Mode; };
-    ADT7310Mode getMode() const noexcept { return this->_Mode; };
+    [[nodiscard]] ADT7310Mode getMode() const noexcept { return this->_Mode; };
 
     virtual void elaborateNewValue() override;
 
