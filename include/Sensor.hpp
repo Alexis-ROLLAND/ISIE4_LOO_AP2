@@ -15,7 +15,8 @@ concept Numeric = std::is_arithmetic_v<OutputType>; /**< Use of concepts to ensu
  * Class Sensor
  *  Abstract class - Template
  */
-template <Numeric OutputType> class Sensor {
+template <Numeric OutputType> 
+class Sensor {
 
   private:
     const uint32_t UID{};     /**< Each Sensor has a Unique ID (32 bits) */
@@ -29,6 +30,8 @@ template <Numeric OutputType> class Sensor {
 
   public:
     Sensor() = delete; /**< Ctor by default is deleted */
+    
+
 
     /**
      * @brief   "Standard" Ctor
@@ -37,7 +40,7 @@ template <Numeric OutputType> class Sensor {
      * @param   const std::string &unit : unit for the new sensor     *
      *
      */
-    Sensor(uint32_t uid, const std::string &unit) : UID{uid}, Unit{unit} {};
+    Sensor(uint32_t uid, const std::string &unit) noexcept : UID{uid}, Unit{unit}{};
 
     virtual ~Sensor() = default; /**< Dtor is defaulted */
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)		# never set less 3.4 min version
+cmake_minimum_required(VERSION 3.14)		# never set less 3.4 min version
 project(TestSensor)
 
 find_program(CCACHE_PROGRAM ccache)
