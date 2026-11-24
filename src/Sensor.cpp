@@ -45,7 +45,7 @@ void TC74::elaborateNewValue() {
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    // Définir une distribution uniforme entre -65 et 127
+    // Définir une distribution uniforme d'entiers entre -65 et 127
     std::uniform_int_distribution<int> distrib(-65, 127);
 
     // Générer un nombre aléatoire dans l'intervalle
@@ -61,7 +61,7 @@ void LM35::elaborateNewValue() {
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    // Définir une distribution uniforme entre -55 et 150
+    // Définir une distribution uniforme de flottantsentre -55 et 150
     std::uniform_real_distribution<double> distrib(-55.0, 150.0);
 
     // Générer un nombre réel aléatoire dans l'intervalle

@@ -9,7 +9,7 @@
 
 //----------------------------------------------------------------------------
 template <typename OutputType>
-concept Numeric = std::is_arithmetic_v<OutputType>; /**< Use of concepts to ensure Output value is a numeric type */
+concept Numeric = std::is_arithmetic_v<OutputType>; /**< Use of concepts to ensure Output value is a "numeric" (arithmetic) type */
 
 /**
  * Class Sensor
@@ -25,6 +25,7 @@ class Sensor {
   protected:
     /**
      * Setter for OutputValue.
+     * Needed by the derived classes to set the output value after elaboration.
      */
     void setOutputValue(OutputType newValue) noexcept { this->outputValue = newValue; };
 
@@ -59,7 +60,7 @@ class Sensor {
     /**
      *  @brief  Prints the output value and the unit message.
      */
-    void dump() const noexcept { std::println("{} {}", this->getOutputValue(), this->getUnit()); };
+    void dump() const noexcept { std::println("UID : 0x{:08x} - Output: {} - Unit: {}", this->getUID(), this->getOutputValue(), this->getUnit()); };
 };
 //----------------------------------------------------------------------------
 /**
@@ -80,12 +81,12 @@ class ADT7310 : public Sensor<uint16_t> {
         : Sensor<uint16_t>(uid, "LSB 0.0625°C (Signed 13 bits mode) or LSB 0.0078°C (Signed 16 bits mode)") {};
     virtual ~ADT7310() = default;
 
-    void setMode(ADT7310Mode Mode) noexcept { this->_Mode = Mode; };
-    [[nodiscard]] ADT7310Mode getMode() const noexcept { return this->_Mode; };
+    void setMode(ADT7310Mode Mode) noexcept { this->_Mode = Mode; };            /**< Specific setter for the sensor mode */
+    [[nodiscard]] ADT7310Mode getMode() const noexcept { return this->_Mode; }; /**< Specific getter for the sensor mode */
 
     virtual void elaborateNewValue() override;
 
-    [[nodiscard]] double getConvertedTemperature() const noexcept;
+    [[nodiscard]] double getConvertedTemperature() const noexcept;  /**< Specific getter for the converted temperature in °C */
 };
 //----------------------------------------------------------------------------
 template <Numeric OutputType> class GenericTempCelciusSensor : public Sensor<OutputType> {
@@ -110,7 +111,7 @@ class TC74 : public GenericTempCelciusSensor<int8_t> {
     virtual ~TC74() = default;
     explicit TC74(uint8_t addr) : GenericTempCelciusSensor<int8_t>{TC74_UUID}, i2c_address{addr} {};
 
-    [[nodiscard]] uint8_t getI2Caddress() const noexcept { return this->i2c_address; };
+    [[nodiscard]] uint8_t getI2Caddress() const noexcept { return this->i2c_address; }; /**< Specific getter for the I2C address */
 
     virtual void elaborateNewValue() override;
 };
